@@ -192,12 +192,6 @@ Since we have defined the positive direction, we can simply integral the velocit
     \int^t_0v_y\derive t=h
 \end{equation}
 
-And the final equation of $t$ is
-
-\begin{equation}
-    \boxed{\dfrac{t}{m}\left(\dfrac{mg}{k}-v_0\sin\theta\right)\mathrm{e}^{-\frac{k}{m}t}+v_0\sin\theta=h}
-\end{equation}
-
 We can solve this equation by methods such as Newton's method or Newton-like methods. After receiving $t$, we can get the horizontal displacement.
 
 \subsection{Horizontal Motion}
@@ -216,10 +210,10 @@ And the initial velocity (horizontal) is $v_0\cos\theta$. The methodology is con
     v_x=v_0\cos\theta\mathrm{e}^{-\frac{k}{m}t}
 \end{equation}
 
-Then if we know the motion time $t$, we can get the horizontal distance of the shot put, which is the \textit{score}:
+Then we can use the integral to get the horizontal displacement.
 
 \begin{equation}
-    \boxed{s = \int^t_0 v_x \derive t = \dfrac{-mv_0\cos\theta}{k}\mathrm{e}^{-\frac{k}{m}t} - \dfrac{-mv_0\cos\theta}{k}}
+    \int^t_0v_x\derive t=s
 \end{equation}
 
 It is important to note that since the magnitude of the air resistance is related to the velocity, differential equations must be used instead of the ordinary integral method. Since the equations in the vertical direction cannot be solved algebraically and directly, no simple and explicit algebraic relation among parameters above can be given.

@@ -1,8 +1,8 @@
 import torch
 from calculate.config import set_config
 from calculate.calculate import displacement
-from calculate.newton import solve
-from calculate.displacement import equation_torch
+from .newton import equation_torch
+from calculate.displacement import result_torch
 import numpy as np
 from .extend import print_extend
 
@@ -17,8 +17,11 @@ theta_range = (0, np.radians(60))
 
 learning_rate = 0.001
 iterations = 10000
-air_resistance_enabled = True
+air_resistance_enabled = False # NOTE: Because the solution with air resistance requires Newton's method, which is impossible to use the gradient descond algorithm to optimize the parameters (for the author). So the air resistance is disabled by default.
 
+
+if air_resistance_enabled:
+    raise ValueError("Air resistance is not supported in this script.")
 
 def optimize():
     global theta, v0, h
@@ -31,15 +34,13 @@ def optimize():
 
         if air_resistance_enabled:
             set_config(_theta=theta.item(), _v0=v0.item(), _h=h.item())
-            time = solve()
-            time = torch.tensor([time], requires_grad=True)
-            function = equation_torch(time)
+            time = equation_torch(1.0)
+            function = result_torch(time)
             function = -function
 
         function.backward()
 
         with torch.no_grad():
-            print(theta, v0, h, function)
             theta += learning_rate * theta.grad
             v0 += learning_rate * v0.grad
             h += learning_rate * h.grad

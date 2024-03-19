@@ -37,3 +37,17 @@ def solve():
         return t_solution
     else:
         raise ValueError("No solution found")
+
+
+def solve_torch():
+    import torch
+
+    t_guess = torch.tensor([1.0], requires_grad=True)
+
+    result = root(equation_torch, t_guess)
+
+    if result.success:
+        t_solution = result.x[0]
+        return t_solution
+    else:
+        raise ValueError("No solution found")

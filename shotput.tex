@@ -237,10 +237,6 @@ So, the trace of the shot put is in the figure \ref{fig:trace-with-residence}. T
     \label{fig:trace-with-residence}
 \end{figure}
 
-\section{Neural Network of Impacts}
-
-Through \texttt{PyTorch}, we can create a neural network with regression to evaluate impacts of parameters.
-
 \section{Model Analysis}
 
 The mathematical model uses differential equations to solve the question.
@@ -269,6 +265,8 @@ Using the formula \ref{eq:vertical-velocity}, we can get the vertical velocity o
       The value of $k$ is not accurate, but it is enough for the model.
     \end{tablenotes}
   \end{threeparttable}
+  \label{table:parameters-data}
+  \caption{Parameters of the Mathematical Model}
 \end{table}
 
 \begin{figure}[H]
@@ -299,5 +297,81 @@ If we add \textit{FB Truck Lean} into the release angle, the error will be reduc
 \subsection{Features}
 
 The mathematical model considers the air residence, which improves the accuracy of the model significantly. Ease of calculation through decomposition of motion.
+
+\section{Optimization}
+
+The optimization of the shot put can be implemented with the gradient descent method.
+
+Because the air resistance is quite small, and the solution of $t$ needs Newton's Method. So it is hard to implement the algorithm. In this part, we ignore the air resistance temporarily.
+
+\subsection{Optimization Formula}
+
+We regard impacts as the following:
+
+\begin{enumerate}
+    \item The initial velocity of the ball (negative because of its direction) $v$,
+    \item The release angle $\theta$,
+    \item The release height $h$,
+    \item NOTE: Other related parameters (except distance) are not included in the model, we ignore them.
+\end{enumerate}
+
+The final formula of the optimization is the following:
+
+\begin{equation}
+    d = \dfrac{v_0\cos\theta\sqrt{v_0^2\sin^2\theta+2hg}-v_0\sin\theta}{g}
+\end{equation}
+
+We can use the gradient descent method to optimize the value of $v_0$, $\theta$, and $h$, to get the maximum value of $d$.
+
+NOTE: The $d$ includes the distance beyond the toe board.
+
+\subsection{Optimization Result}
+
+Through the code \texttt{optimize/grads.py} with the auto differentiation of \texttt{PyTorch}, we can get the result of the optimization.
+
+Be caution that the optimization includes the limit, which is list in the table \ref{table:optimization-result} (lower and upper limit depends on the absolute value):
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{cccc}
+        \hline
+        \textbf{Parameter} & \textbf{Lower Limit} & \textbf{Upper Limit} & \textbf{Optimized Value} \\
+        \hline
+        $v_0$ & $-10.0\si{\meter/\second}$ & $-13.5\si{\meter/\second}$ & $13.5\si{\meter/\second}$ \\
+        $\theta$ & $0\si{\degree}$ & $60.0\si{\degree}$ & $36.2\si{\degree}$ \\
+        $h$ & $1.6\si{\meter}$ & $2.1\si{\meter}$ & $2.1\si{\meter}$ \\
+        \hline
+    \end{tabular}
+    \caption{Optimization Result}
+    \label{table:optimization-result}
+\end{table}
+
+And the result distance is $20.25\si{\meter}$.
+
+It is easy to find out that the $h$ and the $v_0$ is the max in the range.
+
+\subsection{Extra Ranges}
+
+Except the $\theta$, $v_0$ and $h$ touch the max of the range. If the range is larger, the result will be different.
+
+So we set the $h$ and $v_0$ bigger to see the result ($0.1$ each), and the result is following the table \ref{table:optimization-result-extend} (unit: \si{\meter}):
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ccccc}
+        \hline
+        \textbf{Parameter} & \textbf{Upper Result} & \textbf{Lower Result} & \textbf{Upper Diff} & \textbf{Lower Diff} \\
+        \hline
+        $h$ & $20.36\si{\meter}$ & $20.14\si{\meter}$ & $0.11\si{\meter}$ & $-0.11\si{\meter}$ \\
+        $v_0$ & $20.52\si{\meter}$ & $19.99\si{\meter}$ & $0.27\si{\meter}$ & $-0.27\si{\meter}$ \\
+        \hline
+    \end{tabular}
+    \caption{Optimization Result Extend}
+    \label{table:optimization-result-extend}
+\end{table}
+
+
+It is easy to find out that the $v_0$ is more useful in this case.
 
 \end{document}

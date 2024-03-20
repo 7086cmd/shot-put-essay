@@ -152,6 +152,8 @@ We define air resistance as $\boldsymbol{F}_\mathrm{f}=-k\boldsymbol{v}$. So, th
 
 There are 2 parts of the vertical motion, \textbf{ascend} and \textbf{descend}. However, we can regard them as a directed motion with the help of vectors.
 
+\subsubsection{With Air Resistance}
+
 Defining the direction of vertically downward is the positive one, so $\boldsymbol{v}_0$, which is the primal velocity, is negative horizontally and vertically. Meanwhile, the acceleration of gravity, $g$, is positive vertically.
 
 Via Newton's Second Theorem, we can know the force situation vertically:
@@ -194,9 +196,23 @@ Since we have defined the positive direction, we can simply integral the velocit
 
 We can solve this equation by methods such as Newton's method or Newton-like methods. After receiving $t$, we can get the horizontal displacement.
 
+\subsubsection{Without Air Resistance}
+
+If there is no air resistance, it is an ideal motion with gravity only. So the acceleration is simply $g$.
+
+The motion time can be calculated with the height $h$:
+
+\begin{equation}
+    h = v_0\sin\theta t + \dfrac{1}{2}gt^2
+\end{equation}
+
+Then we can get the horizontal displacement after solving the equation whose result is $t$.
+
 \subsection{Horizontal Motion}
 
 The horizontal motion of the shot put is decelerate linear motion. However, the deceleration changes with the velocity.
+
+\subsubsection{With Air Resistance}
 
 Through Newton's Second Theorem, we can also get the horizontal force situation:
 
@@ -236,6 +252,16 @@ So, the trace of the shot put is in the figure \ref{fig:trace-with-residence}. T
     \caption{The Trace of the Shot Put with Air Residence}
     \label{fig:trace-with-residence}
 \end{figure}
+
+\subsubsection{Without Air Resistance}
+
+The horizontal motion without air resistance is a linear motion without any acceleration. When time is $t$, so the speed is $v_0\cos\theta$ all the time. So the displacement is:
+
+\begin{equation}
+    s=v_0\cos\theta t
+\end{equation}
+
+The full euqation is used in the optimization, which doesn't consider the air resistance.
 
 \section{Model Analysis}
 

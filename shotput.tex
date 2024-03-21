@@ -16,17 +16,21 @@
 \geometry{a4paper, scale=0.8}
 
 \title{Mathematical Modeling of Shot Put Throwing}
-\author{Ethan\ Goh}
+\author{Ethan\ Goh\ (No. 20230616)\\\texttt{7086cmd@gmail}}
 \date{\today}
 
 \begin{document}
 \maketitle
 \section*{Abstract}
-There are multiple impacts on the result of the Shot Put competition, e.g. the speed of the ball, the throwing degrees, height, etc. Different factors can cause different results. This article used the kinetic principle and the mathematics model in the 2017 Athletics World Championships Women's Shot Put Final which includes Strike Speed, Strike Height, Strike Height Relative to Body Height, Distance Beyond Toe, Strike Tilt, etc., and created a regression model to analyze key points on the result of the Shot Put competition.
+There are multiple impacts on the result of the Shot Put competition, e.g. the speed of the ball, the throwing degrees, height, etc. Different factors can cause different results. This article used the kinetic principle and the mathematics model in the 2017 Athletics World Championships Women's Shot Put Final which includes Strike Speed, Strike Height, Strike Height Relative to Body Height, Distance Beyond Toe, Strike Tilt, etc., and created a model which uses gradient descent algorithm to analyze key points on the result of the Shot Put competition.
 
-\section*{Keywords} Shot Put Competition, Regression, Kinetic Trace, Mathematics Model
+\section*{Keywords} Shot Put Competition, Gradient Descent, Kinetic Trace, Mathematics Model
+
+\newpage
 
 \tableofcontents
+
+\newpage
 
 \section{Introduction}
 
@@ -87,7 +91,7 @@ In the kinetic analysis, we don't bring the exact data. Some definitions are fol
             \hline
         \end{tabular}
         \begin{tablenotes}
-            \item [1] Actually, the speed is a vector, and the $v_x$, $v_y$ not only depends on the value of the absolute value, but also depends on the throwing angle. Expressing with complex number is also OK, one of the example is $13.24\mathrm{e}^{\cos37.0\si{\degree}+\mathrm{i}\sin37.0\si{\degree}}\si{\meter/\second}$, whose $v_y$ is $7.944\si{\meter/\second}$, and $v_x$ is $10.592\si{\meter/\second}$.
+            \item [1] Actually, the speed is a vector, and the $v_x$, $v_y$ not only depend on the value of the absolute value but also on the throwing angle. Expressing with complex numbers is also OK, one of the examples is $13.24\mathrm{e}^{\cos37.0\si{\degree}+\mathrm{i}\sin37.0\si{\degree}}\si{\meter/\second}$, whose $v_y$ is $7.944\si{\meter/\second}$, and $v_x$ is $10.592\si{\meter/\second}$.
             \item [2] including exceeds toe board distance.
         \end{tablenotes}
     \end{threeparttable}
@@ -107,7 +111,7 @@ We also assume the following conditions:
 
 \subsection{Ignore}
 
-Because some parameters are useless, we ignore following parameters:
+Because some parameters are useless, we ignore the following parameters:
 
 \begin{enumerate}
     \item Front and rear tilt angles,
@@ -117,6 +121,8 @@ Because some parameters are useless, we ignore following parameters:
 \end{enumerate}
 
 \section{Mathematical Model with Kinetic Analysis}
+
+\label{section:mathematics-model}
 
 \subsection{Force Analysis}
 
@@ -154,7 +160,7 @@ There are 2 parts of the vertical motion, \textbf{ascend} and \textbf{descend}. 
 
 \subsubsection{With Air Resistance}
 
-Defining the direction of vertically downward is the positive one, so $\boldsymbol{v}_0$, which is the primal velocity, is negative horizontally and vertically. Meanwhile, the acceleration of gravity, $g$, is positive vertically.
+Defining the direction vertically downward is the positive one, so $\boldsymbol{v}_0$, which is the primal velocity, is negative horizontally and vertically. Meanwhile, the acceleration of gravity, $g$, is positive vertically.
 
 Via Newton's Second Theorem, we can know the force situation vertically:
 
@@ -210,7 +216,7 @@ Then we can get the horizontal displacement after solving the equation whose res
 
 \subsection{Horizontal Motion}
 
-The horizontal motion of the shot put is decelerate linear motion. However, the deceleration changes with the velocity.
+The horizontal motion of the shot put is decelerated linear motion. However, the deceleration changes with the velocity.
 
 \subsubsection{With Air Resistance}
 
@@ -232,7 +238,7 @@ Then we can use the integral to get the horizontal displacement.
     \int^t_0v_x\derive t=s
 \end{equation}
 
-It is important to note that since the magnitude of the air resistance is related to the velocity, differential equations must be used instead of the ordinary integral method. Since the equations in the vertical direction cannot be solved algebraically and directly, no simple and explicit algebraic relation among parameters above can be given.
+It is important to note that since the magnitude of the air resistance is related to the velocity, differential equations must be used instead of the ordinary integral method. Since the equations in the vertical direction cannot be solved algebraically and directly, no simple and explicit algebraic relation among the parameters above can be given.
 
 So, the trace of the shot put is in the figure \ref{fig:trace-with-residence}. That's a bit of an exaggeration.
 
@@ -261,7 +267,7 @@ The horizontal motion without air resistance is a linear motion without any acce
     s=v_0\cos\theta t
 \end{equation}
 
-The full euqation is used in the optimization, which doesn't consider the air resistance.
+The full equation is used in the optimization, which doesn't consider the air resistance.
 
 \section{Model Analysis}
 
@@ -312,7 +318,7 @@ Then, we can bring $t$ into the horizontal equation to get the horizontal displa
 
 We selected Gong Lijiao's shot put in 2017 as an example. The data is in the attachment.
 
-We set the $k = 0.00215$, and received the result of the horizontal displacement with the model, which returns $19.62599 \si{\meter}$, which is close to the real data.
+We set the $k = 0.00215$ and received the result of the horizontal displacement with the model, which returns $19.62599 \si{\meter}$, which is close to the real data.
 
 Through \texttt{calculate/newton.py} provided in the attachment, we use \texttt{scipy} to calculate the approx value of $t$, which is $1.856988167816502 \si{\second}$.
 
@@ -328,7 +334,7 @@ The mathematical model considers the air residence, which improves the accuracy 
 
 The optimization of the shot put can be implemented with the gradient descent method.
 
-Because the air resistance is quite small, and the solution of $t$ needs Newton's Method. So it is hard to implement the algorithm. In this part, we ignore the air resistance temporarily.
+Because the air resistance is quite small, the solution of $t$ needs Newton's Method. So it is hard to implement the algorithm. In this part, we ignore the air resistance temporarily.
 
 \subsection{Optimization Formula}
 
@@ -352,10 +358,11 @@ We can use the gradient descent method to optimize the value of $v_0$, $\theta$,
 NOTE: The $d$ includes the distance beyond the toe board.
 
 \subsection{Optimization Result}
+\label{subsection:optimization-result}
 
-Through the code \texttt{optimize/grads.py} with the auto differentiation of \texttt{PyTorch}, we can get the result of the optimization.
+We can get the optimization result through the code \texttt{optimize/grads.py} with the auto differentiation of \texttt{PyTorch}.
 
-Be caution that the optimization includes the limit, which is list in the table \ref{table:optimization-result} (lower and upper limit depends on the absolute value):
+Be cautious that the optimization includes the limit, which is listed in the table \ref{table:optimization-result} (lower and upper limit depends on the absolute value):
 
 \begin{table}[H]
     \centering
@@ -374,11 +381,11 @@ Be caution that the optimization includes the limit, which is list in the table 
 
 And the result distance is $20.25\si{\meter}$.
 
-It is easy to find out that the $h$ and the $v_0$ is the max in the range.
+It is easy to find out that the $h$ and the $v_0$ are the max in the range.
 
 \subsection{Extra Ranges}
 
-Except the $\theta$, $v_0$ and $h$ touch the max of the range. If the range is larger, the result will be different.
+Except the $\theta$, $v_0$, and $h$ touch the max of the range. If the range is larger, the result will be different.
 
 So we set the $h$ and $v_0$ bigger to see the result ($0.1$ each), and the result is following the table \ref{table:optimization-result-extend} (unit: \si{\meter}):
 
@@ -399,5 +406,45 @@ So we set the $h$ and $v_0$ bigger to see the result ($0.1$ each), and the resul
 
 
 It is easy to find out that the $v_0$ is more useful in this case.
+
+\section{Evaluation}
+
+This model uses the differential equation, gradient descent, etc. algorithms and successfully fits the real situation, which reduces the loss to about $1\%$ (distance). The air resistance is so tiny that we often ignore this factor, and it is subtle whether to use $f=-mv$ or $f=-mv^2$ in this situation.
+
+\subsection{Advantages}
+
+This model combines mathematics and computer technology which uses \texttt{PyTorch}, \texttt{scipy}, etc. that can reduce the calculation. We can get benefits from these techniques, which can automatically calculate the differential, and find the best value.
+
+This module evaluated the impact of the tiny factor \textit{air resistance} which can be just ignored in the shot put competition for approx calculations.
+
+The result of the model is good, which is $0.15\si{\meter}$ per line and $1\%$ among the full data.
+
+\subsection{Disadvantages}
+
+The model that used the differential equation needs to be solved with Newton's Method, which is hard to optimize. So the training of the target used the equation that doesn't include the air resistance and then brought the result into the equation that considers the air resistance. It's not very rigorous. Fortunately, we've proved that it is the optimal result in the near range, whether air resistance is considered.
+
+The calculation of the model is complex so the author spent about 2 nights solving the differential equation. However, with the help of the computer, we can get the answer easily.
+
+\section{Questions}
+
+The modeling question raises several issues, and in this one section, the paper will present the introduction.
+
+\subsection{Model Creating}
+
+The mathematics model is introduced in \ref{section:mathematics-model}, and you can refer to the section to find the model. We used the data from the IAAF Championship which is contained in the attachments and bibliography part.
+
+\subsection{Optimization}
+
+The optimization result is declared in the section \ref{subsection:optimization-result}. It considered $v_0$, $h$, and $\theta$.
+
+\section{Acknowledgement}
+
+\begin{itemize}
+    \item Thanks to the chance of the Zhenhai High School Math Festival Intramural Mathematical Modeling Competition, which provides the problem.
+    \item Thanks to \texttt{PyTorch}, \texttt{scipy}, and other computing libraries so that I can calculate the result fast.
+    \item Thanks to \LaTeX{} so that I can render my essay easily and conveniently.
+    \item Thanks to \texttt{DeepL} and \texttt{Grammarly} so that I can modify my paper easily when there are some grammar mistakes.
+    \item Thanks to my classmate Li Kangbo who referred the incompatibility of $f=-mv^2$ which doesn't reflects the alignment between $\boldsymbol{F}$ and $\boldsymbol{v}$ which is not capable to take the orthogonal decomposition.
+\end{itemize}
 
 \end{document}

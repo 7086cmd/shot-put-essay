@@ -4,10 +4,10 @@ import numpy as np
 from calculate.config import set_config
 from calculate.calculate import displacement
 
-loss = 0.0
+loss, total = 0.0, 0.0
 
 for row in df.rows():
-    v = 0 - row[3] * np.cos(np.radians(row[8]))
+    v = 0 - row[3]
     h = row[5]
     distance = row[2] - row[7]
     angle = np.radians(row[4])
@@ -23,8 +23,13 @@ for row in df.rows():
 
     print(f"Diff: {diff:.2f}")
 
-    loss += diff ** 2
+    loss += np.abs(diff)
+
+    total += distance
 
 loss = loss / len(df)
 
-print(f"Loss: {loss:.2f} per row")
+total = total / len(df)
+
+
+print(f"Loss: {loss:.2f} per row, and the loss rate is {loss / total:.2f}")

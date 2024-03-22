@@ -32,7 +32,9 @@ There are multiple impacts on the result of the Shot Put competition, e.g. the s
 
 \newpage
 
-\section{Introduction}
+\section{Preface}
+
+\label{section:preface}
 
 The ideal routine of the throwing trace is a parabola (as projectile motion). However, the trace isn't a parabola because of the air residence.
 
@@ -63,13 +65,21 @@ However, because of the following reasons,
 
 The trace in \ref{fig:ideal-trace} is inaccurate.
 
-Therefore, the article will develop a mathematical model for the trajectory of the shot put that includes the effect of air resistance. As for the distortion of the throwing direction, the article may use the 3D transforms with Euler angles to adjust the result.
+Therefore, the article will develop a mathematical model for the trajectory of the shot put that includes the effect of air resistance.
+
+Through the gradient descent method, we can optimize the parameters of the model to get the best result.
+
+So the article will be divided into the following sections:
 
 \section{Parameters}
+
+\label{section:parameters}
 
 Some parameters are included, while some parameters are ignored.
 
 \subsection{Parameters in Kinetic Model}
+
+\label{subsection:parameters}
 
 In the kinetic analysis, we don't bring the exact data. Some definitions are following the table \ref{table:parameters}.
 
@@ -107,9 +117,9 @@ We also assume the following conditions:
     \item There is no influence of field forces other than the gravity field, which is assumed to be uniformly strong.
 \end{enumerate}
 
-\subsection{Parameters in the Regression Model}
-
 \subsection{Ignore}
+
+\label{subsection:ignore}
 
 Because some parameters are useless, we ignore the following parameters:
 
@@ -125,6 +135,8 @@ Because some parameters are useless, we ignore the following parameters:
 \label{section:mathematics-model}
 
 \subsection{Force Analysis}
+
+\label{subsection:force-analysis}
 
 During the movement of a shot put ball, it is subjected to 2 forces: gravity and air resistance. The force of gravity is always vertically downward, however, air resistance changes with the direction of velocity.
 
@@ -156,9 +168,13 @@ We define air resistance as $\boldsymbol{F}_\mathrm{f}=-k\boldsymbol{v}$. So, th
 
 \subsection{Vertical Motion}
 
+\label{subsection:vertical-motion}
+
 There are 2 parts of the vertical motion, \textbf{ascend} and \textbf{descend}. However, we can regard them as a directed motion with the help of vectors.
 
 \subsubsection{With Air Resistance}
+
+\label{subsubsection:vertical-motion-with-residence}
 
 Defining the direction vertically downward is the positive one, so $\boldsymbol{v}_0$, which is the primal velocity, is negative horizontally and vertically. Meanwhile, the acceleration of gravity, $g$, is positive vertically.
 
@@ -204,6 +220,8 @@ We can solve this equation by methods such as Newton's method or Newton-like met
 
 \subsubsection{Without Air Resistance}
 
+\label{subsubsection:vertical-motion-without-residence}
+
 If there is no air resistance, it is an ideal motion with gravity only. So the acceleration is simply $g$.
 
 The motion time can be calculated with the height $h$:
@@ -216,9 +234,13 @@ Then we can get the horizontal displacement after solving the equation whose res
 
 \subsection{Horizontal Motion}
 
+\label{subsection:horizontal-motion}
+
 The horizontal motion of the shot put is decelerated linear motion. However, the deceleration changes with the velocity.
 
 \subsubsection{With Air Resistance}
+
+\label{subsubsection:horizontal-motion-with-residence}
 
 Through Newton's Second Theorem, we can also get the horizontal force situation:
 
@@ -261,6 +283,8 @@ So, the trace of the shot put is in the figure \ref{fig:trace-with-residence}. T
 
 \subsubsection{Without Air Resistance}
 
+\label{subsubsection:horizontal-motion-without-residence}
+
 The horizontal motion without air resistance is a linear motion without any acceleration. When time is $t$, so the speed is $v_0\cos\theta$ all the time. So the displacement is:
 
 \begin{equation}
@@ -271,9 +295,13 @@ The full equation is used in the optimization, which doesn't consider the air re
 
 \section{Model Analysis}
 
+\label{section:model-analysis}
+
 The mathematical model uses differential equations to solve the question.
 
 \subsection{Data Brought into the Analysis}
+
+\label{subsection:data-brought}
 
 Using the formula \ref{eq:vertical-velocity}, we can get the vertical velocity of the shot put. Using \texttt{Geogebra}, we can get the $v_y-t$ graph in the figure \ref{fig:vy-t}. Data is used following the table \ref{table:parameters-data}.
 
@@ -316,6 +344,8 @@ Then, we can bring $t$ into the horizontal equation to get the horizontal displa
 
 \subsection{Example: Gong's Shot Put in 2017}
 
+\label{subsection:model-example}
+
 We selected Gong Lijiao's shot put in 2017 as an example. The data is in the attachment.
 
 We set the $k = 0.00215$ and received the result of the horizontal displacement with the model, which returns $19.62599 \si{\meter}$, which is close to the real data.
@@ -328,15 +358,21 @@ If we add \textit{FB Truck Lean} into the release angle, the error will be reduc
 
 \subsection{Features}
 
+\label{subsection:model-features}
+
 The mathematical model considers the air residence, which improves the accuracy of the model significantly. Ease of calculation through decomposition of motion.
 
 \section{Optimization}
+
+\label{section:optimization}
 
 The optimization of the shot put can be implemented with the gradient descent method.
 
 Because the air resistance is quite small, the solution of $t$ needs Newton's Method. So it is hard to implement the algorithm. In this part, we ignore the air resistance temporarily.
 
 \subsection{Optimization Formula}
+
+\label{subsection:optimization-formula}
 
 We regard impacts as the following:
 
@@ -358,6 +394,7 @@ We can use the gradient descent method to optimize the value of $v_0$, $\theta$,
 NOTE: The $d$ includes the distance beyond the toe board.
 
 \subsection{Optimization Result}
+
 \label{subsection:optimization-result}
 
 We can get the optimization result through the code \texttt{optimize/grads.py} with the auto differentiation of \texttt{PyTorch}.
@@ -385,6 +422,8 @@ It is easy to find out that the $h$ and the $v_0$ are the max in the range.
 
 \subsection{Extra Ranges}
 
+\label{subsection:extra-ranges}
+
 Except the $\theta$, $v_0$, and $h$ touch the max of the range. If the range is larger, the result will be different.
 
 So we set the $h$ and $v_0$ bigger to see the result ($0.1$ each), and the result is following the table \ref{table:optimization-result-extend} (unit: \si{\meter}):
@@ -409,9 +448,13 @@ It is easy to find out that the $v_0$ is more useful in this case.
 
 \section{Evaluation}
 
+\label{section:evaluation}
+
 This model uses the differential equation, gradient descent, etc. algorithms and successfully fits the real situation, which reduces the loss to about $1\%$ (distance). The air resistance is so tiny that we often ignore this factor, and it is subtle whether to use $f=-mv$ or $f=-mv^2$ in this situation.
 
 \subsection{Advantages}
+
+\label{subsection:advantages}
 
 This model combines mathematics and computer technology which uses \texttt{PyTorch}, \texttt{scipy}, etc. that can reduce the calculation. We can get benefits from these techniques, which can automatically calculate the differential, and find the best value.
 
@@ -421,23 +464,33 @@ The result of the model is good, which is $0.15\si{\meter}$ per line and $1\%$ a
 
 \subsection{Disadvantages}
 
+\label{subsection:disadvantages}
+
 The model that used the differential equation needs to be solved with Newton's Method, which is hard to optimize. So the training of the target used the equation that doesn't include the air resistance and then brought the result into the equation that considers the air resistance. It's not very rigorous. Fortunately, we've proved that it is the optimal result in the near range, whether air resistance is considered.
 
 The calculation of the model is complex so the author spent about 2 nights solving the differential equation. However, with the help of the computer, we can get the answer easily.
 
 \section{Questions}
 
+\label{section:questions}
+
 The modeling question raises several issues, and in this one section, the paper will present the introduction.
 
 \subsection{Model Creating}
+
+\label{subsection:model-creating}
 
 The mathematics model is introduced in \ref{section:mathematics-model}, and you can refer to the section to find the model. We used the data from the IAAF Championship which is contained in the attachments and bibliography part.
 
 \subsection{Optimization}
 
+\label{subsection:optimization}
+
 The optimization result is declared in the section \ref{subsection:optimization-result}. It considered $v_0$, $h$, and $\theta$.
 
 \section{Acknowledgement}
+
+\label{section:acknowledgement}
 
 \begin{itemize}
     \item Thanks to the chance of the Zhenhai High School Math Festival Intramural Mathematical Modeling Competition, which provides the problem.
